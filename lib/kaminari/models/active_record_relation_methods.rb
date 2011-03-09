@@ -7,6 +7,12 @@ module Kaminari
         # .group returns an OrderdHash that responds to #count
         c.respond_to?(:count) ? c.count : c
       end
+      def size
+        [[0,(total_count - current_page * per_page)].max, per_page].min
+      end
+      def count
+        size
+      end
     end
   end
 end
