@@ -8,7 +8,7 @@ module Kaminari
         c.respond_to?(:count) ? c.count : c
       end
       def size
-        [[0,(total_count - (current_page - 1) * per_page)].max, per_page].min
+        [[0,(total_count - (current_page - 1) * limit_value)].max, limit_value].min
       end
       def count
         size
