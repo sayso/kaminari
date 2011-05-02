@@ -2,49 +2,6 @@ require File.expand_path('../spec_helper', File.dirname(__FILE__))
 include Kaminari::Helpers
 
 describe 'Kaminari::Helpers' do
-  describe 'template lookup rule' do
-    describe 'Paginator' do
-      subject { Paginator }
-      its(:ancestor_renderables) { should == [Paginator] }
-    end
-    describe 'PrevLink' do
-      subject { PrevLink }
-      its(:ancestor_renderables) { should == [PrevLink, Prev, Link, Page] }
-    end
-    describe 'PrevSpan' do
-      subject { PrevSpan }
-      its(:ancestor_renderables) { should == [PrevSpan, Prev, NonLink] }
-    end
-    describe 'FirstPageLink' do
-      subject { FirstPageLink }
-      its(:ancestor_renderables) { should == [FirstPageLink, PageLink, Link, Page] }
-    end
-    describe 'PageLink' do
-      subject { PageLink }
-      its(:ancestor_renderables) { should == [PageLink, Link, Page] }
-    end
-    describe 'CurrentPage' do
-      subject { CurrentPage }
-      its(:ancestor_renderables) { should == [CurrentPage, NonLink, Page] }
-    end
-    describe 'TruncatedSpan' do
-      subject { TruncatedSpan }
-      its(:ancestor_renderables) { should == [TruncatedSpan, NonLink] }
-    end
-    describe 'LastPageLink' do
-      subject { LastPageLink }
-      its(:ancestor_renderables) { should == [LastPageLink, PageLink, Link, Page] }
-    end
-    describe 'NextLink' do
-      subject { NextLink }
-      its(:ancestor_renderables) { should == [NextLink, Next, Link, Page] }
-    end
-    describe 'NextSpan' do
-      subject { NextSpan }
-      its(:ancestor_renderables) { should == [NextSpan, Next, NonLink] }
-    end
-  end
-
   describe 'Paginator' do
     describe 'Paginator::PageProxy' do
       describe '#current?' do
@@ -80,6 +37,28 @@ describe 'Kaminari::Helpers' do
         end
       end
 
+      describe '#next?' do
+        context 'page == current_page + 1' do
+          subject { Paginator::PageProxy.new({:current_page => 52}, 53, nil) }
+          its(:next?) { should be_true }
+        end
+        context 'page != current_page + 1' do
+          subject { Paginator::PageProxy.new({:current_page => 52}, 77, nil) }
+          its(:next?) { should_not be_true }
+        end
+      end
+
+      describe '#prev?' do
+        context 'page == current_page - 1' do
+          subject { Paginator::PageProxy.new({:current_page => 77}, 76, nil) }
+          its(:prev?) { should be_true }
+        end
+        context 'page != current_page + 1' do
+          subject { Paginator::PageProxy.new({:current_page => 77}, 80, nil) }
+          its(:prev?) { should_not be_true }
+        end
+      end
+
       describe '#left_outer?' do
         context 'current_page == left' do
           subject { Paginator::PageProxy.new({:left => 3}, 3, nil) }
@@ -87,7 +66,7 @@ describe 'Kaminari::Helpers' do
         end
         context 'current_page == left + 1' do
           subject { Paginator::PageProxy.new({:left => 3}, 4, nil) }
-          its(:left_outer?) { should be_true }
+          its(:left_outer?) { should_not be_true }
         end
         context 'current_page == left + 2' do
           subject { Paginator::PageProxy.new({:left => 3}, 5, nil) }
@@ -102,7 +81,7 @@ describe 'Kaminari::Helpers' do
         end
         context 'num_pages - page == right' do
           subject { Paginator::PageProxy.new({:num_pages => 10, :right => 3}, 7, nil) }
-          its(:right_outer?) { should be_true }
+          its(:right_outer?) { should_not be_true }
         end
         context 'num_pages - page < right' do
           subject { Paginator::PageProxy.new({:num_pages => 10, :right => 3}, 8, nil) }
@@ -142,14 +121,17 @@ describe 'Kaminari::Helpers' do
       end
       describe '#was_truncated?' do
         before do
-          stub(@template = Object.new).options { {} }
+          stub(@template = Object.new) do
+            options { {} }
+            params { {} }
+          end
         end
-        context 'last.is_a? TruncatedSpan' do
-          subject { Paginator::PageProxy.new({}, 10, TruncatedSpan.new(@template)) }
+        context 'last.is_a? Gap' do
+          subject { Paginator::PageProxy.new({}, 10, Gap.new(@template)) }
           its(:was_truncated?) { should be_true }
         end
-        context 'last.is not a TruncatedSpan' do
-          subject { Paginator::PageProxy.new({}, 10, PageLink.new(@template)) }
+        context 'last.is not a Gap' do
+          subject { Paginator::PageProxy.new({}, 10, Page.new(@template)) }
           its(:was_truncated?) { should_not be_true }
         end
       end

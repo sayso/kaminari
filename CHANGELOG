@@ -1,3 +1,80 @@
+== 0.12.3
+
+* Haml 3.1 Support #96 [FlyboyArt, sonic921]
+
+== 0.12.2
+
+* Added MongoMapper Support #101 [hamin]
+
+* Add first_page? and last_page? to page_scope_methods #51 [holinnn]
+
+* Make sure that the paginate helper always returns a String #99 [Draiken]
+
+* Don't remove includes scopes from count if they are needed #100 [flop]
+
+== 0.12.1
+
+* Slim template support #93 [detrain]
+
+* Use Kaminari.config to specify default value for param_name #94 [avsej]
+
+* Fixed "super called outside of method" error happened in particular versions
+of Ruby 1.8.7 #91 [Skulli]
+
+* _paginate.html.erb isn't rendered with custom theme #97 [danlunde]
+
+== 0.12.0
+
+* General configuration options #41 #62 [javierv, iain]
+  You can now globally override some default values such as default_per_page,
+  window, etc. via configuration file.
+  Also, here comes a generator command that generates the default
+  configuration file into your app's config/initilizers directory.
+
+* Generic pagination support for Array object #47 #68 #74 [lda, ened, jianlin]
+  You can now paginate through any kind of Arrayish object in this way:
+    Kaminari.paginate_array(my_array_object).page(params[:page]).per(10)
+
+* Fixed a serious performance regression in 0.11.0 [ankane]
+  There was a critical performance issue on #count method in 0.11.0 gem.
+
+* Bugfix: Pass the real @params to url_for #90 [utkarshkukreti]
+
+* Fixed a gem packaging problem (circular dependency)
+  There was a packaging problem with Kaminari 0.11.0 that the gem depends on
+  Kaminari gem. Maybe Jeweler + "gemspec" method didn't work well...
+
+== 0.11.0
+
+This release contains several backward incompatibilities on template API.
+You probably need to update your existing templates if you're already using
+your own custom theme.
+
+* Merge _current_page, _first_page_link, _last_page_link and _page_link into
+one _page partial #28 [GarthSnyder]
+
+* Add real first/last page links, and use them by default instead of outer
+window #30 [GarthSnyder]
+
+* The disabled items should simply not be emitted, even as an empty span #30
+[GarthSnyder]
+
+* Skip :order in #count_all so complex groups with generated columns don't
+blow up in SQL-land #61 [keeran, Empact]
+
+* Ignore :include in #count_all to make it work better with polymorphic eager
+loading #80 [njakobsen]
+
+* Quick fix on #count to return the actual number of records on AR 3.0 #45 #50
+
+* Removed "TERRIBLE HORRIBLE NO GOOD VERY BAD HACK" #82 [janx, flop, pda]
+
+* Allow for Multiple Themes #64 [tmilewski]
+
+* Themes can contain the whole application directory structure now
+
+* Use gemspec method in Gemfile [p_elliott]
+
 == 0.10.4
 
 * Do not break ActiveRecord::Base.descendants, by making sure to call super

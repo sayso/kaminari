@@ -19,7 +19,7 @@ No special collection class or anything for the paginated values, instead using 
 As the whole pagination helper is basically just a collection of links and non-links, Kaminari renders each of them through its own partial template inside the Engine. So, you can easily modify their behaviour, style or whatever by overriding partial templates.
 
 === ORM & template engine agnostic
-Kaminari supports multiple ORMs (ActiveRecord, Mongoid) and multiple template engines (ERB, Haml).
+Kaminari supports multiple ORMs (ActiveRecord, Mongoid, MongoMapper) and multiple template engines (ERB, Haml).
 
 === Modern
 The pagination helper outputs the HTML5 <nav> tag by default. Plus, the helper supports Rails 3 unobtrusive Ajax.
@@ -33,7 +33,9 @@ The pagination helper outputs the HTML5 <nav> tag by default. Plus, the helper s
 
 * Haml 3
 
-* Mongoid 2 (beta)
+* Mongoid 2
+
+* MongoMapper 0.9
 
 == Install
 
@@ -42,6 +44,7 @@ Put this line in your Gemfile:
 
 Then bundle:
   % bundle
+
 
 == Usage
 
@@ -57,6 +60,19 @@ Then bundle:
   To show a lot more users per each page (change the +per_page+ value)
     User.page(7).per(50)
   Note that the +per+ scope is not directly defined on the models but is just a method defined on the page scope. This is absolutely reasonable because you will never actually use +per_page+ without specifying the +page+ number.
+
+=== General configuration options
+
+You can configure the following default values by overriding these values using <tt>Kaminari.configure</tt> method.
+  default_per_page  # 25 by default
+  window            # 4 by default
+  outer_window      # 0 by default
+  left              # 0 by default
+  right             # 0 by default
+
+There's a handy generator that generates the default configuration file into config/initilizers directory.
+Run the following generator command, then edit the generated file.
+  % rails g kaminari:config
 
 === Configuring default +per_page+ value for each model
 
@@ -90,24 +106,24 @@ Then bundle:
     <%= paginate @users, :window => 2 %>
   This would output something like <tt>... 5 6 7 8 9 ...</tt> when 7 is the current page.
 
-* specifing the "outer window" size (1 by default)
+* specifing the "outer window" size (0 by default)
 
     <%= paginate @users, :outer_window => 3 %>
   This would output something like <tt>1 2 3 4 ...(snip)... 17 18 19 20</tt> while having 20 pages in total.
 
-* outer window can be separetely specified by +left+, +right+ (1 by default)
+* outer window can be separetely specified by +left+, +right+ (0 by default)
 
-    <%= paginate @users, :left => 0, :right => 2 %>
+    <%= paginate @users, :left => 1, :right => 3 %>
   This would output something like <tt>1 ...(snip)... 18 19 20</tt> while having 20 pages in total.
 
 * changing the parameter name (:+param_name+) for the links
 
-    <%= paginate @users, :param_name => :pagina
+    <%= paginate @users, :param_name => :pagina %>
   This would modify the query parameter name on each links.
 
 * extra parameters (:+params+) for the links
 
-    <%= paginate @users, :params => {:controller => 'foo', :action => 'bar'}
+    <%= paginate @users, :params => {:controller => 'foo', :action => 'bar'} %>
   This would modify each link's +url_option+. :+controller+ and :+action+ might be the keys in common.
 
 * Ajax links (crazy simple, but works perfectly!)
@@ -156,11 +172,35 @@ Kaminari includes a handy template generator.
   or just hit the generator without specifying +THEME+ argument.
     % rails g kaminari:views
 
+* multiple themes
+
+  To utilize multiple themes from within a single application, create a directory within the app/views/kaminari/ and move your custom template files into that directory.
+    % rails g kaminari:views default (skip if you have existing kaminari views)
+    % cd app/views/kaminari
+    % mkdir my_custom_theme
+    % cp _*.html.* my_custom_theme/
+
+  Next reference that directory when calling the paginate method:
+
+    <%= paginate @users, :theme => 'my_custom_theme' %>
+
+  Customize away!
+
+  Note: if the theme isn't present or none is specified, kaminari will default back to the views included within the gem.
+
+=== Paginating a generic Array object
+
+Kaminari provides an Array wrapper class that adapts a generic Array object to the <tt>paginate</tt> view helper.
+However, the <tt>paginate</tt> helper doesn't automatically handle your Array object (this is an intensional design).
+<tt>Kaminari::paginate_array</tt> method converts your Array object into a paginatable Array that accepts <tt>page</tt> method.
+  Kaminari.paginate_array(my_array_object).page(params[:page]).per(10)
+
 
 == For more information
 
 Check out Kaminari recipes on the GitHub Wiki for more advanced tips and techniques.
 https://github.com/amatsuda/kaminari/wiki/Kaminari-recipes
+
 
 == Questions, Feedback
 
