@@ -14,6 +14,7 @@ module Kaminari
     initializer 'kaminari' do |app|
       ActiveSupport.on_load(:active_record) do
         require File.join(File.dirname(__FILE__), 'models/active_record_extension')
+        require File.join(File.dirname(__FILE__), 'models/fixer')
         ::ActiveRecord::Base.send :include, Kaminari::ActiveRecordExtension
       end
       if defined? ::Mongoid
