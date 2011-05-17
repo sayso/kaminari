@@ -89,13 +89,14 @@ module Kaminari
 
     def self.do(input_collection, options = {})
       collection = input_collection
-      if collection.is_a?(ThinkingSphinx::Search)
+      collection = if collection.is_a?(ThinkingSphinx::Search)
         do_thinking_sphinx(collection, options)
       elsif collection.is_a?(ActiveRecord::Relation) && options[:total]
         do_ar_relation(collection, options)
       elsif collection.is_a?(Array)
         do_array(collection, options)
       end
+      collection
     end
   end
 end
