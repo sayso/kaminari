@@ -2,7 +2,7 @@ module Kaminari
 
   class Fixer
 
-    private
+    protected
 
     def self.do_array(collection, options)
       Kaminari.paginate_array(collection)
