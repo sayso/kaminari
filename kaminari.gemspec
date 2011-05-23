@@ -3,14 +3,14 @@ $:.push File.expand_path("../lib", __FILE__)
 require "kaminari/version"
 
 Gem::Specification.new do |s|
-  s.name        = 'kaminari'
+  s.name        = 'sayso-kaminari'
   s.version     = Kaminari::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ['Akira Matsuda']
-  s.email       = ['ronnie@dio.jp']
-  s.homepage    = 'https://github.com/amatsuda/kaminari'
-  s.summary     = 'A pagination engine plugin for Rails 3'
-  s.description = 'Kaminari is a Scope & Engine based, clean, powerful, customizable and sophisticated paginator for Rails 3'
+  s.authors     = ['SaySo']
+  s.email       = ['sayso@truvolabs.com']
+  s.homepage    = 'https://github.com/sayso/kaminari'
+  s.summary     = 'A pagination engine plugin for Rails 3 - forked and gemified for sayso'
+  s.description = 'Kaminari is a Scope & Engine based, clean, powerful, customizable and sophisticated paginator for Rails 3 - forked and gemified for sayso'
 
   s.rubyforge_project = 'kaminari'
 
